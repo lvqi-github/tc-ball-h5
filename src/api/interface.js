@@ -1,5 +1,21 @@
 import axios from './http'
 
+export const getAuthorizeUserInfoUrl = params => {
+    return axios({
+        url: '/weChatAuth/getAuthorizeUserInfoUrl',
+        method: 'get',
+        params
+    })
+}
+
+export const getToken = params => {
+    return axios({
+        url: '/weChatAuth/getToken',
+        method: 'get',
+        params
+    })
+}
+
 /**
  * 首页-获取最新文章
  * @param params
@@ -40,6 +56,8 @@ export const getCategoryArticles = params => {
 }
 
 export default {
+    getAuthorizeUserInfoUrl,
+    getToken,
     getNewestArticles,
     getCategoryList,
     getCategoryArticles

@@ -58,7 +58,7 @@
                     pageSize: this.pageSize
                 };
                 this.$api.getNewestArticles(reqInfo).then(res => {
-                    self.articleList = res.data.articleList;
+                    self.articleList = res.values;
                     self.isLoading = false; //关闭下拉刷新效果
                     self.finished = false; //未加载完成
                     self.page++;
@@ -79,8 +79,8 @@
                         pageSize: this.pageSize
                     };
                     this.$api.getNewestArticles(reqInfo).then(res => {
-                        if(res.success){
-                            let articleList = res.data.articleList;
+                        if(res.resultCode == "1000"){
+                            let articleList = res.values;
                             if (articleList.length !== 0) {
                                 //新增数据拼接在后面
                                 self.articleList = self.articleList.concat(articleList);
@@ -92,7 +92,7 @@
                             self.page++;
 
                             // 数据全部加载完成
-                            if (this.articleList.length >= res.totalCount) {
+                            if (this.articleList.length >= res.totalElements) {
                                 this.finished = true;
                             }
                         }

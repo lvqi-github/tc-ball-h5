@@ -16,9 +16,11 @@ module.exports = {
         }
     },
     devServer: {
+        port: 80,
+        disableHostCheck:true,
         proxy: {
             '/api': {
-                target: 'https://www.easy-mock.com/mock/5c505b0ae886613e3ee52053/tc-ball-h5',
+                target: 'http://localhost:8082/serve/ball',
                 changeOrigin: true,
                 ws: true,
                 pathRewrite: {

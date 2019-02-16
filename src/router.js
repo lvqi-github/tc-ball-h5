@@ -10,6 +10,14 @@ export default new Router({
       redirect: '/index'
     },
     {
+      path: '/author',
+      name: 'Author',
+      component: resolve => require(['./views/Author'], resolve),
+      meta: {
+        title: '授权页'
+      }
+    },
+    {
       path: '/index',
       name: 'Index',
       component: resolve => require(['./views/Index'], resolve),

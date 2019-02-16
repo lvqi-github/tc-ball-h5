@@ -1,5 +1,5 @@
 <template>
-    <div class="category">
+    <div>
         <div class="custom-category-left">
             <van-badge-group :active-key="activeKey" @change="onChange">
                 <van-badge v-bind:key="item.categoryId" v-for="item in categoryList" :title="item.categoryName" @click="onClick(item.categoryId)" />
@@ -10,8 +10,7 @@
                 <van-list v-model="loading" :finished="finished" @load="onLoad" finished-text="没有更多了">
                     <van-cell v-for="(item,index) in articleList" :key="index">
                         <template slot="title">
-                            <!--<span class="custom-title">{{item.title}}</span>-->
-                            <div class="custom-label">{{item.label}}</div>
+                            <div class="custom-label" v-html="item.label"></div>
                             <div class="custom-datetime">
                                 发布时间：{{item.releaseTime}}
                                 <span class="custom-currency">
@@ -131,24 +130,18 @@
 </script>
 
 <style scoped>
-    .category {
-        margin-bottom: 50px;
-    }
     .custom-category-left {
         position: absolute;
         width: 100px;
         min-width: 100px;
-        /*height: 617px;*/
+        height: calc(100vh - 50px);
         overflow: scroll;
     }
     .custom-category-right {
         width: 275px;
         margin-left: 100px;
-        /*height: 617px;*/
+        height: calc(100vh - 50px);
         overflow: scroll;
-    }
-    .custom-title {
-        margin-left: 3px;
     }
     .custom-label {
         color: #969799;

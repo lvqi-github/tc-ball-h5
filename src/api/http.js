@@ -9,6 +9,10 @@ axios.defaults.timeout = 10000;
  * 请求拦截器
  */
 axios.interceptors.request.use(config => {
+    // 从localStorage获取token
+    let token = window.localStorage.getItem("token");
+    config.headers.common['Authorization'] = `${token}`;
+
     if (config.method.toLocaleLowerCase() === 'post') {
         config.data = qs.stringify(config.data)
     }
