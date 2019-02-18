@@ -9,9 +9,10 @@ import api from './api/index'
 // 此时可以直接在 Vue 原型上调用 $api 了
 Vue.use(api)
 
-import { Tabbar, TabbarItem } from 'vant'
+import { Tabbar, TabbarItem, Notify} from 'vant'
 Vue.use(Tabbar)
 Vue.use(TabbarItem)
+Vue.use(Notify)
 
 Vue.config.productionTip = false
 

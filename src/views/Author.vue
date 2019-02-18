@@ -6,23 +6,25 @@
     export default {
         created() {
             let code = this.getUrlParame('code')// 截取code
-            alert(code);
             if (!code) {
                 //获取微信授权地址
                 let reqInfo = {
                     redirectUrl: "http://23g698m374.iask.in"
                 };
                 this.$api.getAuthorizeUserInfoUrl(reqInfo).then(res => {
-                    alert(res.value);
-                    window.location.href = res.value;
+                    if(res.resultCode == "1000"){
+                        window.location.href = res.value;
+                    }
                 });
             }else {
                 let reqInfo = {
                     code: code
                 };
                 this.$api.getToken(reqInfo).then(res => {
-                    window.localStorage.setItem("token", res.value);
-                    this.$router.push({ name: 'Index'})
+                    if(res.resultCode == "1000"){
+                        window.localStorage.setItem("token", res.value);
+                        this.$router.push({ name: 'Index'})
+                    }
                 });
             }
         },
