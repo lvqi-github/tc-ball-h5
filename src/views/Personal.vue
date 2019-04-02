@@ -3,8 +3,8 @@
         <div class="user-header">
             <div class="header-bg">
                 <div class="user-img">
-                    <img src="http://5b0988e595225.cdn.sohucs.com/q_70,c_zoom,w_640/images/20181221/802991d121df41f0af01a9c6dcd267f0.jpeg"/>
-                    <span>南无阿弥陀佛2学习下3422222222222</span>
+                    <img :src="avatar"/>
+                    <span>{{name}}</span>
                 </div>
             </div>
         </div>
@@ -22,54 +22,97 @@
             </van-cell-group>
             <van-row class="user-links">
                 <van-col span="6">
-                    <van-icon class="user-links-icon" name="pending-payment" />
-                    待付款
+                    <div @click="toMemberRechargeRecord">
+                        <van-icon class="user-links-icon" name="pending-payment" />
+                        会员充值记录
+                    </div>
                 </van-col>
                 <van-col span="6">
-                    <van-icon class="user-links-icon" name="orders-o" />
-                    已购买
+                    <div @click="toArticlePurchaseRecord">
+                        <van-icon class="user-links-icon" name="orders-o" />
+                        文章购买记录
+                    </div>
                 </van-col>
             </van-row>
         </div>
 
-        <div>
+        <div class="user-function">
             <van-cell-group>
-                <van-cell  value="点击取消" is-link >
+                <van-cell  value="设置" is-link to="/subscribeManage" >
                     <template slot="icon">
                         <van-icon name="like" color="#FF0000" class="custom-icon" />
                     </template>
                     <template slot="title">
-                        <span class="custom-text">订阅/取消</span>
-                        <van-tag type="danger">已订阅</van-tag>
+                        <span class="custom-text">订阅管理</span>
                     </template>
                 </van-cell>
-                <van-cell value="到期时间：2019-03-05" is-link >
+                <van-cell :value="memberCellValue" is-link to="/memberInfo" >
                     <template slot="icon">
                         <van-icon name="vip-card" color="#FFD700" class="custom-icon" />
                     </template>
                     <template slot="title">
                         <span class="custom-text">VIP会员</span>
-                        <van-tag type="danger">已开通</van-tag>
+                        <van-tag type="danger">{{memberStatusName}}</van-tag>
                     </template>
                 </van-cell>
             </van-cell-group>
         </div>
+
+
+        <van-tabbar v-model="tabBarActive" fixed>
+            <van-tabbar-item icon="wap-home" to="/index">首页</van-tabbar-item>
+            <van-tabbar-item icon="apps-o"  to="/category">分类</van-tabbar-item>
+            <van-tabbar-item icon="notes-o"  to="/statistic">统计</van-tabbar-item>
+            <van-tabbar-item icon="friends-o"  to="/personal">个人中心</van-tabbar-item>
+        </van-tabbar>
     </div>
 </template>
 
 <script>
-    import { Row, Col, Icon, Cell, CellGroup, Tag } from 'vant';
-
+    import { mapGetters } from 'vuex'
     export default {
-        name: "User",
-        components: {
-            [Row.name]: Row,
-            [Col.name]: Col,
-            [Icon.name]: Icon,
-            [Cell.name]: Cell,
-            [CellGroup.name]: CellGroup,
-            [Tag.name]: Tag
+        name: "Personal",
+        data() {
+          return {
+              tabBarActive: 3,
+              memberStatusName: '',
+              memberCellValue: ''
+          }
         },
+        computed: {
+            ...mapGetters([
+                'name',
+                'avatar'
+            ])
+        },
+        created() {
+            this.initMemberInfo();
+        },
+        methods: {
+            initMemberInfo() {
+                let self = this;
+                this.$api.getMemberInfo(null).then(res => {
+                    if(res.resultCode == "1000"){
+                        if (res.value.status == 1) {
+                            self.memberStatusName = "未开通会员";
+                            self.memberCellValue = "立即开通";
+                        }else if(res.value.status == 2) {
+                            self.memberStatusName = "会员已过期";
+                            self.memberCellValue = "立即续费";
+                        }else if(res.value.status == 3) {
+                            self.memberStatusName = "会员有效";
+                            self.memberCellValue = res.value.memberEndDate + "到期";
+                        }
+                    }
+                });
+            },
+            toMemberRechargeRecord() {
+                this.$router.push( '/memberRechargeRecord');
+            },
+            toArticlePurchaseRecord() {
+                this.$router.push( '/articlePurchaseRecord');
+            }
+        }
     }
 </script>
 
@@ -77,7 +120,6 @@
     .user{
         background-color: #f8f8f8;
     }
-
     .user-header{
         background-color: #fff;
         padding-bottom: 25px;
@@ -128,6 +170,9 @@
         margin-bottom: 10px;
     }
 
+    .user-function {
+        margin-bottom: 50px;
+    }
     .custom-text {
         color: #666;
         font-size: 15px;

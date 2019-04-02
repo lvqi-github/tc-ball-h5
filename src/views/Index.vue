@@ -1,47 +1,45 @@
 <template>
     <div class="index-article">
         <van-notice-bar
-                text="足协杯战线连续第2年上演广州德比战，上赛季半决赛上恒大以两回合5-3的总比分淘汰富力。"
+                text="提供足球、篮球赛事资讯，赛事解读。推荐解读仅供参考，如需购彩请选择中国体育彩票。"
                 left-icon="volume-o"/>
 
         <van-panel title="最新推荐"></van-panel>
 
         <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-            <van-list  v-model="loading"  :finished="finished"   @load="onLoad" finished-text="没有更多了">
-                <van-cell v-for="(item,index) in articleList" :key="index">
+            <van-list v-model="loading"  :finished="finished"   @load="onLoad" finished-text="没有更多了">
+                <van-cell v-for="(item,index) in articleList" :key="index" @click="cellClick(item.articleId)">
                     <template slot="title">
-                        <span class="custom-title">{{item.title}}</span>
-                        <div class="custom-label">{{item.label}}</div>
+                        <span class="custom-title">{{item.articleTitle}}</span>
+                        <div class="custom-label">{{item.articleDesc}}</div>
                         <div class="custom-datetime">
-                            发布时间：{{item.releaseTime}}
-                            <span class="custom-currency">
-                                <van-icon name="gold-coin-o" class="custom-currency-icon"/>{{item.amount}}
+                            发布时间：{{item.created}}
+                            <span v-if="item.chargeType ==1" class="custom-currency">
+                                <van-icon name="gold-coin-o" class="custom-currency-icon"/>{{item.price}}
                             </span>
                         </div>
                     </template>
                     <template slot="icon">
-                        <van-icon :name="item.urlImg" size="70px"/>
+                        <van-icon :name="item.articleType == 1 ? '//img.grtcxx.com/system/football.jpg' : (item.articleType === 2 ? '//pnn0msmwq.bkt.clouddn.com/system/basketball.jpg' : '//pnn0msmwq.bkt.clouddn.com/system/foot_basket_ball.jpg')" size="70px"/>
                     </template>
                 </van-cell>
             </van-list>
         </van-pull-refresh>
+
+        <van-tabbar v-model="tabBarActive" fixed>
+            <van-tabbar-item icon="wap-home" to="/index">首页</van-tabbar-item>
+            <van-tabbar-item icon="apps-o"  to="/category">分类</van-tabbar-item>
+            <van-tabbar-item icon="notes-o"  to="/statistic">统计</van-tabbar-item>
+            <van-tabbar-item icon="friends-o"  to="/personal">个人中心</van-tabbar-item>
+        </van-tabbar>
     </div>
 </template>
 
 <script>
-    import { NoticeBar, Panel, List, Cell, Icon, PullRefresh } from 'vant';
-
     export default {
-        components: {
-            [NoticeBar.name]: NoticeBar,
-            [Panel.name]: Panel,
-            [List.name]: List,
-            [Cell.name]: Cell,
-            [PullRefresh.name]: PullRefresh,
-            [Icon.name]: Icon
-        },
         data() {
             return {
+                tabBarActive: 0,
                 loading: false, //控制上拉加载的加载动画
                 finished: false, //是否已加载完成
                 isLoading: false, //控制下拉刷新的加载动画
@@ -57,47 +55,48 @@
                     page: this.page + 1,
                     pageSize: this.pageSize
                 };
-                this.$api.getNewestArticles(reqInfo).then(res => {
-                    self.articleList = res.values;
-                    self.isLoading = false; //关闭下拉刷新效果
-                    self.finished = false; //未加载完成
-                    self.page++;
+                this.$api.getNewestArticleList(reqInfo).then(res => {
+                    if(res.resultCode == "1000"){
+                        self.articleList = res.values;
+                        self.isLoading = false; //关闭下拉刷新效果
+                        self.finished = false; //未加载完成
+                        self.page++;
+                    }
                 });
             },
             onRefresh() { //下拉刷新
                 let self = this;
-                setTimeout(() => {
-                    self.page = 0;
-                    self.init(); //加载数据
-                }, 500);
+                self.page = 0;
+                self.init(); //加载数据
             },
             onLoad() {
                 let self = this;
-                setTimeout(() => {
-                    let reqInfo = {
-                        page: this.page + 1,
-                        pageSize: this.pageSize
-                    };
-                    this.$api.getNewestArticles(reqInfo).then(res => {
-                        if(res.resultCode == "1000"){
-                            let articleList = res.values;
-                            if (articleList.length !== 0) {
-                                //新增数据拼接在后面
-                                self.articleList = self.articleList.concat(articleList);
-                            }
-
-                            // 上拉加载状态结束
-                            self.loading = false;
-
-                            self.page++;
-
-                            // 数据全部加载完成
-                            if (this.articleList.length >= res.totalElements) {
-                                this.finished = true;
-                            }
+                let reqInfo = {
+                    page: this.page + 1,
+                    pageSize: this.pageSize
+                };
+                this.$api.getNewestArticleList(reqInfo).then(res => {
+                    if(res.resultCode == "1000"){
+                        let articleList = res.values;
+                        if (articleList.length !== 0) {
+                            //新增数据拼接在后面
+                            self.articleList = self.articleList.concat(articleList);
                         }
-                    });
-                }, 500);
+
+                        // 上拉加载状态结束
+                        self.loading = false;
+
+                        self.page++;
+
+                        // 数据全部加载完成
+                        if (this.articleList.length >= res.totalElements) {
+                            this.finished = true;
+                        }
+                    }
+                });
+            },
+            cellClick(articleId) {
+                this.$router.push({ path: '/articleDetail', query: { articleId: articleId }});
             }
         }
     }

@@ -2,6 +2,7 @@ const autoprefixer = require('autoprefixer');
 const pxtorem = require('postcss-pxtorem');
 
 module.exports = {
+    productionSourceMap: false,
     css: {
         loaderOptions: {
             postcss: {
@@ -16,7 +17,7 @@ module.exports = {
         }
     },
     devServer: {
-        port: 80,
+        port: 8080,
         disableHostCheck:true,
         proxy: {
             '/api': {
