@@ -70,7 +70,10 @@
                 selectPackageId: '',
                 selectPackageDesc: '',
                 selectPackageCentPrice: 0,
-                rechargePackageList: []
+                rechargePackageList: [],
+                wcPay: {
+
+                }
             }
         },
         computed: {
@@ -119,7 +122,53 @@
                 this.$router.go(-1)
             },
             onSubmit() {
-                this.$toast('支付暂未开通，敬请期待');
+                this.$toast.loading({
+                    duration: 0,       // 持续展示 toast
+                    forbidClick: true, // 禁用背景点击
+                    message: '处理中...'
+                });
+                let reqInfo={
+                    rechargePackageId: this.selectPackageId
+                };
+                this.$api.memberRechargePay(reqInfo).then(res => {
+                    this.$toast.clear();
+                    if(res.resultCode == "1000"){
+                        this.wcPay = res.value;
+
+                        if (typeof WeixinJSBridge == "undefined"){
+                            if( document.addEventListener ){
+                                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                            }else if (document.attachEvent){
+                                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                            }
+                        }else{
+                            this.onBridgeReady();
+                        }
+                    }
+                });
+            },
+            onBridgeReady() {
+                WeixinJSBridge.invoke(
+                    'getBrandWCPayRequest', {
+                        "appId": this.wcPay.appId, // 公众号名称，由商户传入
+                        "timeStamp": this.wcPay.timeStamp, // 时间戳，自1970年以来的秒数
+                        "nonceStr": this.wcPay.nonceStr, // 随机串
+                        "package": this.wcPay.packages,
+                        "signType": this.wcPay.signType, // 微信签名方式
+                        "paySign": this.wcPay.paySign //微信签名
+                    },
+                    function(res){
+                        if(res.err_msg == "get_brand_wcpay_request:ok" ){
+                            // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+                            this.$router.push( '/paySuccess');
+                        }else if (res.err_msg == "get_brand_wcpay_request:cancel" ) {
+                            this.$toast('支付取消');
+                        } else {
+                            this.$toast('支付失败');
+                        }
+                    }
+                );
             }
         }
     }

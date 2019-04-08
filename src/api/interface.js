@@ -132,6 +132,23 @@ export const unSubscribeAuthor = params => {
     })
 }
 
+//---------------------------------- 支付 ----------------------------------------
+export const articlePurchasePay = params => {
+    return axios({
+        url: '/pay/articlePurchasePay',
+        method: 'post',
+        data: params
+    })
+}
+
+export const memberRechargePay = params => {
+    return axios({
+        url: '/pay/memberRechargePay',
+        method: 'post',
+        data: params
+    })
+}
+
 export default {
     getAuthorizeUserInfoUrl,
     getToken,
@@ -148,5 +165,7 @@ export default {
     getMemberRechargePackageList,
     getSubscribeSetupList,
     subscribeAuthor,
-    unSubscribeAuthor
+    unSubscribeAuthor,
+    articlePurchasePay,
+    memberRechargePay
 }

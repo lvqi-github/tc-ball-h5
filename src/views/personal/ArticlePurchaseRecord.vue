@@ -14,7 +14,7 @@
                     </div>
                     <div slot="label" class="panel-content">
                         <p>文章描述：{{item.articleDesc}}</p>
-                        <p>充值时间：{{item.created}}</p>
+                        <p>购买时间：{{item.created}}</p>
                         <p>订单编号：{{item.orderNo}}</p>
                     </div>
                 </van-cell>

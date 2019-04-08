@@ -91,5 +91,12 @@ export default new Router({
         meta: {
             title: '会员充值'
         }
+    }, {
+        path: '/paySuccess',
+        name: 'PaySuccess',
+        component: resolve => require(['./views/pay/PaySuccess'], resolve),
+        meta: {
+            title: '支付成功页'
+        }
     }]
 })

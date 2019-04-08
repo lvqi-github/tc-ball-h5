@@ -51,8 +51,13 @@
                 if (subItem.subscribeFlag) { // 订阅
                     this.$api.subscribeAuthor(reqInfo).then(res => {
                         this.$toast.clear();
-                        if(res.resultCode == "1000" && res.value){
-                            this.$toast.success({duration: 1000, message:'订阅成功'});
+                        if(res.resultCode == "1000"){
+                            if(res.value){
+                                this.$toast.success({duration: 1000, message:'订阅成功'});
+                            }else {
+                                subItem.subscribeFlag = false;
+                                this.$toast(res.resultMsg);
+                            }
                         }else {
                             subItem.subscribeFlag = false;
                             this.$toast.fail({duration: 1000, message:'订阅失败'});

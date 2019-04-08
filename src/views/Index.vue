@@ -20,7 +20,7 @@
                         </div>
                     </template>
                     <template slot="icon">
-                        <van-icon :name="item.articleType == 1 ? '//img.grtcxx.com/system/football.jpg' : (item.articleType === 2 ? '//pnn0msmwq.bkt.clouddn.com/system/basketball.jpg' : '//pnn0msmwq.bkt.clouddn.com/system/foot_basket_ball.jpg')" size="70px"/>
+                        <van-icon :name="item.articleType == 1 ? '//img.grtcxx.com/system/football.jpg' : (item.articleType === 2 ? '//img.grtcxx.com/system/basketball.jpg' : '//img.grtcxx.com/system/foot_basket_ball.jpg')" size="70px"/>
                     </template>
                 </van-cell>
             </van-list>
