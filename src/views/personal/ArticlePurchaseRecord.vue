@@ -4,7 +4,7 @@
 
         <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
             <van-list v-model="loading" :finished="finished" @load="onLoad" finished-text="没有更多了">
-                <van-cell v-for="(item,index) in recordList" :key="index" class="panel">
+                <van-cell v-for="(item,index) in recordList" :key="index" class="panel" @click="cellClick(item.articleId)">
                     <div slot="title" class="panel-header">
                         <div class="left">
                             <van-icon name="coupon" color="#f5ca3a" style="font-size: 21px; top: 5px;"/>
@@ -81,7 +81,10 @@
                 });
             },
             onClickLeft() {
-                this.$router.go(-1)
+                this.$router.go(-1);
+            },
+            cellClick(articleId) {
+                this.$router.push({ path: '/articleDetail', query: { articleId: articleId }});
             }
         }
     }
