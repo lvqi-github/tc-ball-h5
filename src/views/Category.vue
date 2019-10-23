@@ -17,7 +17,8 @@
                             <div class="custom-datetime">
                                 发布时间：{{item.created}}
                                 <span class="custom-currency">
-                                    <van-icon name="gold-coin-o" class="custom-currency-icon"/>{{item.price}}
+                                    <van-tag v-if="item.articleStatus ==3" type="danger">已结束</van-tag>
+                                    <van-icon v-if="item.articleStatus !=3 && item.chargeType ==1" name="gold-coin-o" class="custom-currency-icon">{{item.price}}</van-icon>
                                 </span>
                             </div>
                         </template>
